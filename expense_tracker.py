@@ -136,6 +136,7 @@ class App(tk.Tk):
         ttk.Label(head,text="v3 • Smart personal finance dashboard").pack(side="left",padx=15)
         ttk.Button(head,text="Settings",command=self.settings).pack(side="right")
         ttk.Button(head,text="Export",command=self.export).pack(side="right",padx=6)
+        ttk.Button(head,text="Report",command=self.report).pack(side="right",padx=6)
         self.nb=ttk.Notebook(self); self.nb.pack(fill="both",expand=True,padx=12,pady=(0,12))
         self.dash=ttk.Frame(self.nb,padding=12); self.expt=ttk.Frame(self.nb,padding=12); self.bud=ttk.Frame(self.nb,padding=12); self.rec=ttk.Frame(self.nb,padding=12)
         for tab,name in [(self.dash,"Dashboard"),(self.expt,"Expenses"),(self.bud,"Budgets"),(self.rec,"Recurring")]: self.nb.add(tab,text=name)
@@ -278,6 +279,18 @@ class App(tk.Tk):
                 paths=self.db.export(self.y,self.m,EXPORT_DIR,fmt.get()); win.destroy(); messagebox.showinfo("Export complete","Created:\\n" + "\\n".join(map(str,paths)))
             except Exception as e: messagebox.showerror("Export failed",str(e))
         ttk.Button(win,text="Export",command=go).pack(pady=15)
+
+    def report(self):
+        total=self.db.total(self.y,self.m); cats=self.db.categories(self.y,self.m)
+        days=calendar.monthrange(self.y,self.m)[1]; prev_m=self.m-1; prev_y=self.y
+        if prev_m==0: prev_m=12; prev_y-=1
+        prev=self.db.total(prev_y,prev_m)
+        data={"month":ym(self.y,self.m),"total":f"{total:.2f}","transactions":len(self.db.expenses(self.y,self.m)),
+              "daily_average":f"{(total/days):.2f}","previous_month_total":f"{prev:.2f}",
+              "change":f"{(total-prev):.2f}","categories":[{"category":c,"total":f"{v:.2f}"} for c,v in cats]}
+        EXPORT_DIR.mkdir(parents=True,exist_ok=True); path=EXPORT_DIR/f"report_{ym(self.y,self.m)}.json"
+        path.write_text(json.dumps(data,indent=2),encoding="utf-8")
+        messagebox.showinfo("Report created",f"Created:\n{path}")
 
     def settings(self):
         win=tk.Toplevel(self);win.title("Settings");win.transient(self);win.grab_set()
