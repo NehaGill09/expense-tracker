@@ -1,64 +1,48 @@
-# Expense Tracker v2
+# Expense Tracker v3
 
-A desktop expense manager built with Python, SQLite, Tkinter and Matplotlib.
+A full-featured desktop personal expense manager using Python, SQLite, Tkinter and Matplotlib.
 
-## What's new
-
-- SQLite database instead of CSV-only storage
-- Automatic migration from the old `expenses.csv`
-- Dashboard with monthly spending cards
-- Spending-by-category chart
-- Monthly budgets by category
-- Automatic recurring expenses
-- Smart monthly CSV exports (detailed + category summary)
-- JSON monthly reports
-- Expense search/listing through the dashboard
-- Delete expenses
+## Features
+- SQLite persistence with automatic migration from legacy \`expenses.csv\`
+- Dashboard: monthly total, daily average, month-over-month change and top category
+- Spending by category chart and six-month trend chart
+- Search and category filtering
+- Add and delete expenses
+- Monthly category budgets with remaining/over-budget status
+- Recurring expenses with automatic monthly generation
+- Pause/resume and delete recurring rules
+- Smart CSV exports (detailed + category summary)
+- Excel workbook export
+- JSON-style analytics are available through the database/reporting layer
+- Currency setting
 - Automated tests
 
 ## Run
 
-Python 3.10+ is recommended.
-
-```bash
+\`\`\`bash
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
 python expense_tracker.py
-```
+\`\`\`
 
 Windows PowerShell:
-
-```powershell
+\`\`\`powershell
 python -m venv .venv
-.venv\Scripts\Activate.ps1
+.venv\\Scripts\\Activate.ps1
 python -m pip install -r requirements.txt
 python expense_tracker.py
-```
+\`\`\`
 
-## Test
-
-```bash
+Test:
+\`\`\`bash
 python -m pytest
-```
+\`\`\`
 
-## Files created automatically
+## Generated files
+- \`expenses.db\` — local SQLite database
+- \`exports/expenses_YYYY-MM.csv\` — detailed export
+- \`exports/expenses_YYYY-MM_summary.csv\` — category summary
+- \`exports/expenses_YYYY-MM.xlsx\` — Excel export when selected
 
-- `expenses.db` — SQLite database
-- `exports/expenses_YYYY-MM.csv` — detailed monthly export
-- `exports/expenses_YYYY-MM_summary.csv` — category summary
-- `exports/report_YYYY-MM.json` — monthly report
-
-The database and generated exports are ignored by Git so personal spending data is not committed.
-
-## Recurring expenses
-
-Add a recurring expense with a day of the month. When the app starts, it checks whether the current month's recurring expense is due and creates it once automatically. If a month has fewer days than the selected day, the last day of that month is used.
-
-## Budgeting
-
-Set a monthly limit for each category. The dashboard shows spent, budget and remaining amount for the selected month.
-
-## Note
-
-Tkinter is included with most Python installations. On some Linux distributions it must be installed separately (for example, the package commonly named `python3-tk`).
+Generated personal data is ignored by Git.
